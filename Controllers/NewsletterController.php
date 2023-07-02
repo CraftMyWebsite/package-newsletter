@@ -3,6 +3,7 @@
 namespace CMW\Controller\Newsletter;
 
 use CMW\Controller\Core\MailController;
+use CMW\Controller\Core\SecurityController;
 use CMW\Controller\Users\UsersController;
 use CMW\Manager\Env\EnvManager;
 use CMW\Manager\Flash\Alert;
@@ -13,6 +14,7 @@ use CMW\Manager\Requests\Request;
 use CMW\Manager\Router\Link;
 use CMW\Manager\Views\View;
 use CMW\Model\Newsletter\NewsletterModel;
+use CMW\Model\Newsletter\NewsletterSettingsModel;
 use CMW\Model\Newsletter\NewsletterUserModel;
 use CMW\Model\Users\UsersModel;
 use CMW\Utils\Redirect;
@@ -36,6 +38,7 @@ class NewsletterController extends AbstractController
 
         $newsLetter = NewsletterModel::getInstance()->getNewsletter();
         $newsLetterUser = NewsletterUserModel::getInstance()->getNewsletterUsers();
+        $config = NewsletterSettingsModel::getInstance()->getConfig();
 
 
         View::createAdminView('Newsletter', 'manage')
@@ -44,7 +47,7 @@ class NewsletterController extends AbstractController
                 "Admin/Resources/Assets/Js/Pages/simple-datatables.js")
             ->addScriptBefore("Admin/Resources/Vendors/Tinymce/tinymce.min.js",
                 "Admin/Resources/Vendors/Tinymce/Config/full.js")
-            ->addVariableList(["newsLetter" => $newsLetter, "newsLetterUser" => $newsLetterUser])
+            ->addVariableList(["newsLetter" => $newsLetter, "newsLetterUser" => $newsLetterUser,"config" => $config])
             ->view();
     }
 
@@ -72,30 +75,56 @@ class NewsletterController extends AbstractController
         Redirect::redirectPreviousRoute();
     }
 
-    /*----------PUBLIC POST----------.
+    #[Link("/settings", Link::POST, [], "/cmw-admin/newsletter")]
+    public function settingsPost(): void
+    {
+        UsersController::redirectIfNotHavePermissions("core.dashboard", "newsletter.settings");
 
-    Use like that :
-    <form action="newsletter" method="post">
-        <?php (new SecurityManager())->insertHiddenToken() ?>
-        <input type="email" name="newsletter_users_mail" placeholder="your@mail.com" required>
-        <button type="submit">Send</button>
-    </form>
 
-    */
+        [$captcha] = Utils::filterInput("captcha");
+
+        NewsletterSettingsModel::getInstance()->updateConfig($captcha === NULL ? 0 : 1);
+
+        Flash::send(Alert::SUCCESS, LangManager::translate("core.toaster.success"),LangManager::translate("newsletter.flash.apply"));
+
+        Redirect::redirectPreviousRoute();
+    }
+
+    /*----------PUBLIC POST----------*/
     #[Link("/", Link::POST, [], "/newsletter")]
     public function addNewsletterUserPost(): void
     {
-        [$newsletter_users_mail] = Utils::filterInput("newsletter_users_mail");
+        $config = NewsletterSettingsModel::getInstance()->getConfig();
 
-        if (NewsletterUserModel::getInstance()->userExist($newsletter_users_mail)) {
-            Flash::send(Alert::ERROR,LangManager::translate("newsletter.flash.sorry"),LangManager::translate("newsletter.flash.alreadyIn"));
+        if ($config === null){
+            Flash::send(Alert::ERROR, LangManager::translate('core.toaster.error'),
+                LangManager::translate("newsletter.flash.notDefined"));
             Redirect::redirectPreviousRoute();
         }
 
-        NewsletterUserModel::getInstance()->addNewsletterUser($newsletter_users_mail);
+        if ($config->captchaIsEnable()) {
+            if (SecurityController::checkCaptcha()) {
+                [$newsletter_users_mail] = Utils::filterInput("newsletter_users_mail");
+                if (NewsletterUserModel::getInstance()->userExist($newsletter_users_mail)) {
+                    Flash::send(Alert::ERROR,LangManager::translate("newsletter.flash.sorry"),LangManager::translate("newsletter.flash.alreadyIn"));
+                    Redirect::redirectPreviousRoute();
+                }
+                NewsletterUserModel::getInstance()->addNewsletterUser($newsletter_users_mail);
+                Flash::send(Alert::SUCCESS, LangManager::translate("newsletter.flash.thanks"),LangManager::translate("newsletter.flash.subscribed"));
 
-        Flash::send(Alert::SUCCESS, LangManager::translate("newsletter.flash.thanks"),LangManager::translate("newsletter.flash.subscribed"));
-
+            } else {
+                Flash::send(Alert::ERROR, LangManager::translate("core.toaster.error"),
+                    LangManager::translate("newsletter.flash.error-captcha"));
+            }
+        } else {
+            [$newsletter_users_mail] = Utils::filterInput("newsletter_users_mail");
+            if (NewsletterUserModel::getInstance()->userExist($newsletter_users_mail)) {
+                Flash::send(Alert::ERROR,LangManager::translate("newsletter.flash.sorry"),LangManager::translate("newsletter.flash.alreadyIn"));
+                Redirect::redirectPreviousRoute();
+            }
+            NewsletterUserModel::getInstance()->addNewsletterUser($newsletter_users_mail);
+            Flash::send(Alert::SUCCESS, LangManager::translate("newsletter.flash.thanks"),LangManager::translate("newsletter.flash.subscribed"));
+        }
         Redirect::redirectPreviousRoute();
     }
 

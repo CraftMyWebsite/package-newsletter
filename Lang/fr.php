@@ -12,8 +12,13 @@ return [
         "thanks" => "Merci",
         "subscribed" => "Vous êtes inscrit à la newsletter !",
         "bye" => "Vous ne faite plus partie de la newsletter",
+        "notDefined" => "Réglages non définie !",
+        "apply" => "Réglages appliqué.",
+        "error-captcha" => "Merci de compléter le captcha",
     ],
     "admin" => [
+        "settings" => "Réglages",
+        "captcha_hint" => "Activer le captcha ? (Paramétrable <a href='../security'>ici</a>)",
         "new_title" => "Nouvelle newsletter",
         "content" => " Contenu",
         "send" => "Envoyer",
