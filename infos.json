@@ -1,0 +1,23 @@
+{
+  "name": "Newsletter",
+  "menus": [
+    {
+      "name_menu_fr": "Newsletter",
+      "name_menu_en": "Newsletter",
+      "icon_menu": "fa-solid fa-bullhorn",
+      "url_menu": "newsletter/manage"
+    }
+  ],
+  "description": [
+    {
+      "fr": "Envoyé des news à vos utilisateurs",
+      "en": "Send news to your users"
+    }
+  ],
+
+  "version": "0.0.1",
+  "author": "Zomb",
+
+  "isGame": false,
+  "isCore": false
+}
