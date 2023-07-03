@@ -15,6 +15,8 @@ return [
         "notDefined" => "Settings not defined !",
         "apply" => "Settings applied.",
         "error-captcha" => "Please complete the captcha.",
+        "error-sender" => "You have not defined a sending email or a display name!",
+        "error-config" => "There is a problem in your SMTP configuration!",
     ],
     "admin" => [
         "settings" => "Settings",
@@ -28,5 +30,7 @@ return [
         "date" => "Date",
         "subscriber" => "Subscribers",
         "mail" => "E-Mail",
+        "mail-sender" => "Sending emails: ",
+        "name-sender" => "Display name :",
     ],
 ];

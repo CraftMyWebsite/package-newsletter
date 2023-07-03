@@ -2,6 +2,7 @@
 
 use CMW\Manager\Lang\LangManager;
 use CMW\Manager\Security\SecurityManager;
+use CMW\Utils\Website;
 
 $title = LangManager::translate("newsletter.title");
 $description = LangManager::translate("newsletter.description");
@@ -26,10 +27,26 @@ $description = LangManager::translate("newsletter.description");
             <div class="card-body">
                 <form action="settings" method="post">
                     <?php (new SecurityManager())->insertHiddenToken() ?>
-                        <div class="form-check form-switch">
+                        <div class="form-check form-switch mb-2">
                             <input class="form-check-input" type="checkbox" id="captcha" name="captcha" <?= $config->captchaIsEnable() ? 'checked' : '' ?>>
                             <label class="form-check-label" for="captcha"><?= LangManager::translate("newsletter.admin.captcha_hint") ?></label>
                         </div>
+                    <h6><?= LangManager::translate("newsletter.admin.mail-sender") ?></h6>
+                    <div class="form-group position-relative has-icon-left">
+                        <input type="text" class="form-control" name="mail" required
+                               placeholder="no_reply@mail.com" value="<?= $config->getSenderMail() ?>">
+                        <div class="form-control-icon">
+                            <i class="fa-solid fa-at"></i>
+                        </div>
+                    </div>
+                    <h6><?= LangManager::translate("newsletter.admin.name-sender") ?></h6>
+                    <div class="form-group position-relative has-icon-left">
+                        <input type="text" class="form-control" name="name" value="<?= $config->getSenderName() ?>" required
+                               placeholder="Newsletter <?= Website::getName()?>">
+                        <div class="form-control-icon">
+                            <i class="fa-solid fa-signature"></i>
+                        </div>
+                    </div>
                     <div class="text-center mt-2">
                         <button type="submit" class="btn btn-primary"><?= LangManager::translate("core.btn.save") ?></button>
                     </div>
@@ -51,10 +68,6 @@ $description = LangManager::translate("newsletter.description");
                                placeholder="<?= LangManager::translate("newsletter.admin.new_title") ?>">
                         <div class="form-control-icon">
                             <i class="fa-solid fa-envelope-open"></i>
-                        </div>
-                        <div class="form-check form-switch">
-                            <input class="form-check-input" type="checkbox" id="captcha" name="captcha" <?= $config->captchaIsEnable() ? 'checked' : '' ?>>
-                            <label class="form-check-label" for="captcha"><?= LangManager::translate("contact.settings.captcha_hint") ?></label>
                         </div>
                     </div>
                     <h6><?= LangManager::translate("newsletter.admin.content") ?> :</h6>

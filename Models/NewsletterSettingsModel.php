@@ -34,17 +34,21 @@ class NewsletterSettingsModel extends AbstractModel
         $res = $res->fetch();
 
         return new NewsletterSettingEntity(
-            $res['newsletter_settings_captcha']
+            $res['newsletter_settings_captcha'],
+            $res['newsletter_settings_email'],
+            $res['newsletter_settings_sender_name']
         );
     }
 
-    public function updateConfig(int $captcha): ?NewsletterSettingEntity
+    public function updateConfig(int $captcha, string $mail, string $name): ?NewsletterSettingEntity
     {
         $info = array(
             "captcha" => $captcha,
+            "mail" => $mail,
+            "name" => $name,
         );
 
-        $sql = "UPDATE cmw_newsletter_settings SET newsletter_settings_captcha = :captcha";
+        $sql = "UPDATE cmw_newsletter_settings SET newsletter_settings_captcha = :captcha, newsletter_settings_email = :mail, newsletter_settings_sender_name = :name";
 
         $db = DatabaseManager::getInstance();
         $req = $db->prepare($sql);

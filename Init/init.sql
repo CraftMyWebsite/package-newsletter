@@ -12,7 +12,9 @@ CREATE TABLE if not exists `cmw_newsletter`
 
 CREATE TABLE if not exists `cmw_newsletter_settings`
 (
-    `newsletter_settings_captcha`             TINYINT      NOT NULL
+    `newsletter_settings_captcha` TINYINT NOT NULL,
+    `newsletter_settings_email`  VARCHAR(100) NULL,
+    `newsletter_settings_sender_name`  VARCHAR(100) NULL
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4;
 INSERT INTO cmw_newsletter_settings (newsletter_settings_captcha)

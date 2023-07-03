@@ -15,6 +15,8 @@ return [
         "notDefined" => "Réglages non définie !",
         "apply" => "Réglages appliqué.",
         "error-captcha" => "Merci de compléter le captcha",
+        "error-sender" => "Vous n'avez pas définie de mail d'envoie ou de nom d'affichage !",
+        "error-config" => "Il y à un problème dans votre configuration SMTP !",
     ],
     "admin" => [
         "settings" => "Réglages",
@@ -28,5 +30,7 @@ return [
         "date" => "Date",
         "subscriber" => "Abonné(e)s",
         "mail" => "E-Mail",
+        "mail-sender" => "Mails d'envoie :",
+        "name-sender" => "Nom d'affichage :",
     ],
 ];
