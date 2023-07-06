@@ -61,7 +61,7 @@ class NewsletterController extends AbstractController
 
         $i=0;
         [$newsletter_object, $newsletter_content] = Utils::filterInput("newsletter_object", "newsletter_content");
-        $user_id = UsersModel::getLoggedUser();
+        $user_id = UsersModel::getCurrentUser()?->getId();
 
         $url = Website::getProtocol() . '://' . $_SERVER['SERVER_NAME'] . EnvManager::getInstance()->getValue("PATH_SUBFOLDER") . 'newsletter/unsubscribe/';
 
