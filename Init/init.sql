@@ -8,7 +8,8 @@ CREATE TABLE if not exists `cmw_newsletter`
     CONSTRAINT fk_newsletter_users FOREIGN KEY (user_id) REFERENCES cmw_users (user_id) ON UPDATE CASCADE ON DELETE SET NULL,
     PRIMARY KEY (`newsletter_id`)
 ) ENGINE = InnoDB
-  DEFAULT CHARSET = utf8mb4;
+  CHARACTER SET = utf8mb4
+  COLLATE = utf8mb4_unicode_ci;
 
 CREATE TABLE if not exists `cmw_newsletter_settings`
 (
@@ -16,7 +17,8 @@ CREATE TABLE if not exists `cmw_newsletter_settings`
     `newsletter_settings_email`  VARCHAR(100) NULL,
     `newsletter_settings_sender_name`  VARCHAR(100) NULL
 ) ENGINE = InnoDB
-  DEFAULT CHARSET = utf8mb4;
+  CHARACTER SET = utf8mb4
+  COLLATE = utf8mb4_unicode_ci;
 INSERT INTO cmw_newsletter_settings (newsletter_settings_captcha)
 VALUES (0);
 
@@ -28,4 +30,5 @@ CREATE TABLE if not exists `cmw_newsletter_users`
     `newsletter_created` TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (`newsletter_users_id`)
 ) ENGINE = InnoDB
-  DEFAULT CHARSET = utf8mb4;
+  CHARACTER SET = utf8mb4
+  COLLATE = utf8mb4_unicode_ci;
