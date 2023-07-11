@@ -42,7 +42,7 @@ $description = LangManager::translate("newsletter.description");
                     <h6><?= LangManager::translate("newsletter.admin.name-sender") ?></h6>
                     <div class="form-group position-relative has-icon-left">
                         <input type="text" class="form-control" name="name" value="<?= $config->getSenderName() ?>" required
-                               placeholder="Newsletter <?= Website::getName()?>">
+                               placeholder="Newsletter <?= Website::getWebsiteName()?>">
                         <div class="form-control-icon">
                             <i class="fa-solid fa-signature"></i>
                         </div>
