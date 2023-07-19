@@ -43,12 +43,12 @@ class NewsletterController extends AbstractController
 
 
         View::createAdminView('Newsletter', 'manage')
-            ->addStyle("Admin/Resources/Vendors/Simple-datatables/style.css","Admin/Resources/Assets/Css/Pages/simple-datatables.css")
+            ->addStyle("Admin/Resources/Vendors/Simple-datatables/style.css", "Admin/Resources/Assets/Css/Pages/simple-datatables.css")
             ->addScriptAfter("Admin/Resources/Vendors/Simple-datatables/Umd/simple-datatables.js",
                 "Admin/Resources/Assets/Js/Pages/simple-datatables.js")
             ->addScriptBefore("Admin/Resources/Vendors/Tinymce/tinymce.min.js",
                 "Admin/Resources/Vendors/Tinymce/Config/full.js")
-            ->addVariableList(["newsLetter" => $newsLetter, "newsLetterUser" => $newsLetterUser,"config" => $config])
+            ->addVariableList(["newsLetter" => $newsLetter, "newsLetterUser" => $newsLetterUser, "config" => $config])
             ->view();
     }
 
@@ -59,26 +59,25 @@ class NewsletterController extends AbstractController
 
         $config = NewsletterSettingsModel::getInstance()->getConfig();
 
-        $i=0;
+        $i = 0;
         [$newsletter_object, $newsletter_content] = Utils::filterInput("newsletter_object", "newsletter_content");
         $user_id = UsersModel::getCurrentUser()?->getId();
 
         $url = Website::getProtocol() . '://' . $_SERVER['SERVER_NAME'] . EnvManager::getInstance()->getValue("PATH_SUBFOLDER") . 'newsletter/unsubscribe/';
 
-        if(MailModel::getInstance()->getConfig() !== null && MailModel::getInstance()->getConfig()->isEnable()){
+        if (MailModel::getInstance()->getConfig() !== null && MailModel::getInstance()->getConfig()->isEnable()) {
             if ($config->getSenderMail() !== null && $config->getSenderName() !== null) {
-                foreach (NewsletterUserModel::getInstance()->getNewsletterUsers() as $mail)
-                {
-                    MailController::getInstance()->sendMailWithSender($config->getSenderMail(), $config->getSenderName(), $mail->getMail(), $newsletter_object, $newsletter_content . "<br><br><small><a href='".$url.$mail->getKey()."' target='_blank'>".LangManager::translate("newsletter.unsubscribe")."</a></small>");
+                foreach (NewsletterUserModel::getInstance()->getNewsletterUsers() as $mail) {
+                    MailController::getInstance()->sendMailWithSender($config->getSenderMail(), $config->getSenderName(), $mail->getMail(), $newsletter_object, $newsletter_content . "<br><br><small><a href='" . $url . $mail->getKey() . "' target='_blank'>" . LangManager::translate("newsletter.unsubscribe") . "</a></small>");
                     $i++;
                 }
-                NewsletterModel::getInstance()->createNewsletter($user_id,$newsletter_object,$newsletter_content);
-                Flash::send(Alert::SUCCESS, LangManager::translate("core.toaster.success"),LangManager::translate("newsletter.flash.sendTo") . $i . LangManager::translate("newsletter.flash.users"));
+                NewsletterModel::getInstance()->createNewsletter($user_id, $newsletter_object, $newsletter_content);
+                Flash::send(Alert::SUCCESS, LangManager::translate("core.toaster.success"), LangManager::translate("newsletter.flash.sendTo") . $i . LangManager::translate("newsletter.flash.users"));
             } else {
-                Flash::send(Alert::ERROR,LangManager::translate("core.toaster.error") ,LangManager::translate("newsletter.flash.error-sender"));
+                Flash::send(Alert::ERROR, LangManager::translate("core.toaster.error"), LangManager::translate("newsletter.flash.error-sender"));
             }
         } else {
-            Flash::send(Alert::ERROR,LangManager::translate("core.toaster.error") ,LangManager::translate("newsletter.flash.error-config"));
+            Flash::send(Alert::ERROR, LangManager::translate("core.toaster.error"), LangManager::translate("newsletter.flash.error-config"));
         }
         Redirect::redirectPreviousRoute();
     }
@@ -88,11 +87,11 @@ class NewsletterController extends AbstractController
     {
         UsersController::redirectIfNotHavePermissions("core.dashboard", "newsletter.settings");
 
-        [$captcha, $mail, $name] = Utils::filterInput("captcha", "mail", "name");
+        [$mail, $name] = Utils::filterInput("mail", "name");
 
-        NewsletterSettingsModel::getInstance()->updateConfig($captcha === NULL ? 0 : 1, $mail, $name);
+        NewsletterSettingsModel::getInstance()->updateConfig($mail, $name);
 
-        Flash::send(Alert::SUCCESS, LangManager::translate("core.toaster.success"),LangManager::translate("newsletter.flash.apply"));
+        Flash::send(Alert::SUCCESS, LangManager::translate("core.toaster.success"), LangManager::translate("newsletter.flash.apply"));
 
         Redirect::redirectPreviousRoute();
     }
@@ -103,34 +102,24 @@ class NewsletterController extends AbstractController
     {
         $config = NewsletterSettingsModel::getInstance()->getConfig();
 
-        if ($config === null){
+        if ($config === null) {
             Flash::send(Alert::ERROR, LangManager::translate('core.toaster.error'),
                 LangManager::translate("newsletter.flash.notDefined"));
             Redirect::redirectPreviousRoute();
         }
 
-        if ($config->captchaIsEnable()) {
-            if (SecurityController::checkCaptcha()) {
-                [$newsletter_users_mail] = Utils::filterInput("newsletter_users_mail");
-                if (NewsletterUserModel::getInstance()->userExist($newsletter_users_mail)) {
-                    Flash::send(Alert::ERROR,LangManager::translate("newsletter.flash.sorry"),LangManager::translate("newsletter.flash.alreadyIn"));
-                    Redirect::redirectPreviousRoute();
-                }
-                NewsletterUserModel::getInstance()->addNewsletterUser($newsletter_users_mail);
-                Flash::send(Alert::SUCCESS, LangManager::translate("newsletter.flash.thanks"),LangManager::translate("newsletter.flash.subscribed"));
-
-            } else {
-                Flash::send(Alert::ERROR, LangManager::translate("core.toaster.error"),
-                    LangManager::translate("newsletter.flash.error-captcha"));
-            }
-        } else {
+        if (SecurityController::checkCaptcha()) {
             [$newsletter_users_mail] = Utils::filterInput("newsletter_users_mail");
             if (NewsletterUserModel::getInstance()->userExist($newsletter_users_mail)) {
-                Flash::send(Alert::ERROR,LangManager::translate("newsletter.flash.sorry"),LangManager::translate("newsletter.flash.alreadyIn"));
+                Flash::send(Alert::ERROR, LangManager::translate("newsletter.flash.sorry"), LangManager::translate("newsletter.flash.alreadyIn"));
                 Redirect::redirectPreviousRoute();
             }
             NewsletterUserModel::getInstance()->addNewsletterUser($newsletter_users_mail);
-            Flash::send(Alert::SUCCESS, LangManager::translate("newsletter.flash.thanks"),LangManager::translate("newsletter.flash.subscribed"));
+            Flash::send(Alert::SUCCESS, LangManager::translate("newsletter.flash.thanks"), LangManager::translate("newsletter.flash.subscribed"));
+
+        } else {
+            Flash::send(Alert::ERROR, LangManager::translate("core.toaster.error"),
+                LangManager::translate("newsletter.flash.error-captcha"));
         }
         Redirect::redirectPreviousRoute();
     }
@@ -140,7 +129,7 @@ class NewsletterController extends AbstractController
     {
         NewsletterUserModel::getInstance()->deleteUser($key);
 
-        Flash::send(Alert::SUCCESS, LangManager::translate("core.toaster.success"),LangManager::translate("newsletter.flash.bye"));
+        Flash::send(Alert::SUCCESS, LangManager::translate("core.toaster.success"), LangManager::translate("newsletter.flash.bye"));
 
         Redirect::redirectToHome();
     }

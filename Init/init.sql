@@ -13,14 +13,11 @@ CREATE TABLE if not exists `cmw_newsletter`
 
 CREATE TABLE if not exists `cmw_newsletter_settings`
 (
-    `newsletter_settings_captcha` TINYINT NOT NULL,
     `newsletter_settings_email`  VARCHAR(100) NULL,
     `newsletter_settings_sender_name`  VARCHAR(100) NULL
 ) ENGINE = InnoDB
   CHARACTER SET = utf8mb4
   COLLATE = utf8mb4_unicode_ci;
-INSERT INTO cmw_newsletter_settings (newsletter_settings_captcha)
-VALUES (0);
 
 CREATE TABLE if not exists `cmw_newsletter_users`
 (

@@ -27,10 +27,6 @@ $description = LangManager::translate("newsletter.description");
             <div class="card-body">
                 <form action="settings" method="post">
                     <?php (new SecurityManager())->insertHiddenToken() ?>
-                        <div class="form-check form-switch mb-2">
-                            <input class="form-check-input" type="checkbox" id="captcha" name="captcha" <?= $config->captchaIsEnable() ? 'checked' : '' ?>>
-                            <label class="form-check-label" for="captcha"><?= LangManager::translate("newsletter.admin.captcha_hint") ?></label>
-                        </div>
                     <h6><?= LangManager::translate("newsletter.admin.mail-sender") ?></h6>
                     <div class="form-group position-relative has-icon-left">
                         <input type="text" class="form-control" name="mail" required
