@@ -10,6 +10,7 @@ $description = LangManager::translate("newsletter.description");
 /* @var \CMW\Entity\Newsletter\NewsletterSettingEntity|null $config */
 /** @var \CMW\Entity\Newsletter\NewsletterEntity[] $newsLetter */
 /** @var \CMW\Entity\Newsletter\NewsletterUserEntity[] $newsLetterUser */
+/* @var \CMW\Entity\Newsletter\NewsletterExternalUserEntity[] $externalUsers */
 ?>
 
 <div class="d-flex flex-wrap justify-content-between">
@@ -128,4 +129,74 @@ $description = LangManager::translate("newsletter.description");
         </div>
     </div>
 
+    <div class="col-12 col-lg-12">
+        <div class="card">
+            <div class="card-header d-flex">
+                <h4 class="col-11"><?= LangManager::translate("newsletter.admin.externalUsers.title") ?></h4>
+                <button type="button" data-bs-toggle="modal" data-bs-target="#addModal" class="btn btn-primary">
+                    <i class="fas fa-add"></i> <?= LangManager::translate('core.btn.add') ?>
+                </button>
+            </div>
+            <div class="card-body">
+                <table class="table" id="table2">
+                    <thead>
+                    <tr>
+                        <th class="text-center"><?= LangManager::translate("newsletter.admin.mail") ?></th>
+                        <th class="text-center"><?= LangManager::translate("newsletter.admin.dateCreated") ?></th>
+                        <th class="text-center"></th>
+                    </tr>
+                    </thead>
+                    <tbody class="text-center">
+                    <?php foreach ($externalUsers as $externaluser) : ?>
+                        <tr>
+                            <td><?= $externaluser->getEmail() ?></td>
+                            <td><?= $externaluser->getDateCreatedFormatted() ?></td>
+                            <td>
+                                <a href="manage/external/users/delete/<?= $externaluser->getId() ?>" class="text-danger">
+                                    <i class="fas fa-trash"></i>
+                                </a>
+                            </td>
+                        </tr>
+                    <?php endforeach; ?>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
 </section>
+
+
+<!-- Modal Add -->
+<div class="modal fade" id="addModal" tabindex="-1" role="dialog" aria-labelledby="addModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <form action="manage/external/users/add" method="post">
+                <?php (new SecurityManager())->insertHiddenToken(); ?>
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addModalLabel"><?= LangManager::translate('newsletter.admin.externalUsers.add.title') ?></h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <h6><?= LangManager::translate('users.users.mail') ?> :</h6>
+                    <div class="form-group position-relative has-icon-left">
+                        <input type="email" class="form-control" name="email" autocomplete="off"
+                               placeholder="teyir@exemple.com" required="">
+                        <div class="form-control-icon">
+                            <i class="fa-solid fa-at"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                        <?= LangManager::translate('core.btn.close') ?>
+                    </button>
+                    <button type="submit" class="btn btn-primary">
+                        <?= LangManager::translate('core.btn.save') ?>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

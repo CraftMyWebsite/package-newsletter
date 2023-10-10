@@ -12,8 +12,10 @@ use CMW\Manager\Lang\LangManager;
 use CMW\Manager\Package\AbstractController;
 use CMW\Manager\Requests\Request;
 use CMW\Manager\Router\Link;
+use CMW\Manager\Security\EncryptManager;
 use CMW\Manager\Views\View;
 use CMW\Model\Core\MailModel;
+use CMW\Model\Newsletter\NewsletterExternalUserModel;
 use CMW\Model\Newsletter\NewsletterModel;
 use CMW\Model\Newsletter\NewsletterSettingsModel;
 use CMW\Model\Newsletter\NewsletterUserModel;
@@ -40,7 +42,7 @@ class NewsletterController extends AbstractController
         $newsLetter = NewsletterModel::getInstance()->getNewsletter();
         $newsLetterUser = NewsletterUserModel::getInstance()->getNewsletterUsers();
         $config = NewsletterSettingsModel::getInstance()->getConfig();
-
+        $externalUsers = NewsletterExternalUserModel::getInstance()->getExternalUsers();
 
         View::createAdminView('Newsletter', 'manage')
             ->addStyle("Admin/Resources/Vendors/Simple-datatables/style.css", "Admin/Resources/Assets/Css/Pages/simple-datatables.css")
@@ -48,7 +50,8 @@ class NewsletterController extends AbstractController
                 "Admin/Resources/Assets/Js/Pages/simple-datatables.js")
             ->addScriptBefore("Admin/Resources/Vendors/Tinymce/tinymce.min.js",
                 "Admin/Resources/Vendors/Tinymce/Config/full.js")
-            ->addVariableList(["newsLetter" => $newsLetter, "newsLetterUser" => $newsLetterUser, "config" => $config])
+            ->addVariableList(["newsLetter" => $newsLetter, "newsLetterUser" => $newsLetterUser, "config" => $config,
+                "externalUsers" => $externalUsers])
             ->view();
     }
 
@@ -59,26 +62,39 @@ class NewsletterController extends AbstractController
 
         $config = NewsletterSettingsModel::getInstance()->getConfig();
 
+        if ($config === null) {
+            Flash::send(Alert::ERROR, LangManager::translate("core.toaster.error"),
+                LangManager::translate("newsletter.flash.error-config"));
+            Redirect::redirectPreviousRoute();
+        }
+
         $i = 0;
         [$newsletter_object, $newsletter_content] = Utils::filterInput("newsletter_object", "newsletter_content");
         $user_id = UsersModel::getCurrentUser()?->getId();
 
         $url = Website::getProtocol() . '://' . $_SERVER['SERVER_NAME'] . EnvManager::getInstance()->getValue("PATH_SUBFOLDER") . 'newsletter/unsubscribe/';
 
-        if (MailModel::getInstance()->getConfig() !== null && MailModel::getInstance()->getConfig()->isEnable()) {
-            if ($config->getSenderMail() !== null && $config->getSenderName() !== null) {
-                foreach (NewsletterUserModel::getInstance()->getNewsletterUsers() as $mail) {
-                    MailController::getInstance()->sendMailWithSender($config->getSenderMail(), $config->getSenderName(), $mail->getMail(), $newsletter_object, $newsletter_content . "<br><br><small><a href='" . $url . $mail->getKey() . "' target='_blank'>" . LangManager::translate("newsletter.unsubscribe") . "</a></small>");
-                    $i++;
-                }
-                NewsletterModel::getInstance()->createNewsletter($user_id, $newsletter_object, $newsletter_content);
-                Flash::send(Alert::SUCCESS, LangManager::translate("core.toaster.success"), LangManager::translate("newsletter.flash.sendTo") . $i . LangManager::translate("newsletter.flash.users"));
-            } else {
-                Flash::send(Alert::ERROR, LangManager::translate("core.toaster.error"), LangManager::translate("newsletter.flash.error-sender"));
-            }
-        } else {
-            Flash::send(Alert::ERROR, LangManager::translate("core.toaster.error"), LangManager::translate("newsletter.flash.error-config"));
+        if (!MailModel::getInstance()->getConfig()?->isEnable()) {
+            Flash::send(Alert::ERROR, LangManager::translate("core.toaster.error"),
+                LangManager::translate("newsletter.flash.error-sender"));
+            Redirect::redirectPreviousRoute();
         }
+
+        foreach (NewsletterUserModel::getInstance()->getNewsletterUsers() as $mail) {
+            MailController::getInstance()->sendMailWithSender($config->getSenderMail(), $config->getSenderName(), $mail->getMail(), $newsletter_object, $newsletter_content . "<br><br><small><a href='" . $url . $mail->getKey() . "' target='_blank'>" . LangManager::translate("newsletter.unsubscribe") . "</a></small>");
+            $i++;
+        }
+
+        foreach (NewsletterExternalUserModel::getInstance()->getExternalUsers() as $externalUser) {
+            MailController::getInstance()->sendMailWithSender($config->getSenderMail(), $config->getSenderName(), $externalUser->getEmail(), $newsletter_object, $newsletter_content . "<br><br><small><a href='" . $url . $externalUser->getKey() . "' target='_blank'>" . LangManager::translate("newsletter.unsubscribe") . "</a></small>");
+            $i++;
+        }
+
+        NewsletterModel::getInstance()->createNewsletter($user_id, $newsletter_object, $newsletter_content);
+        Flash::send(Alert::SUCCESS, LangManager::translate("core.toaster.success"),
+            LangManager::translate("newsletter.flash.sendTo") . $i . LangManager::translate("newsletter.flash.users"));
+
+
         Redirect::redirectPreviousRoute();
     }
 
@@ -93,6 +109,50 @@ class NewsletterController extends AbstractController
 
         Flash::send(Alert::SUCCESS, LangManager::translate("core.toaster.success"), LangManager::translate("newsletter.flash.apply"));
 
+        Redirect::redirectPreviousRoute();
+    }
+
+    #[Link("/manage/external/users/delete/:id", Link::GET, ['id' => '[0-9+]'], "/cmw-admin/newsletter")]
+    public function newsletterExternalUsersDelete(Request $request, int $id): void
+    {
+        UsersController::redirectIfNotHavePermissions("core.dashboard", "newsletter.external.users.delete");
+
+        $user = NewsletterExternalUserModel::getInstance()->getExternalUser($id);
+
+        if ($user === null) {
+            Flash::send(Alert::ERROR, LangManager::translate("core.toaster.error"),
+                LangManager::translate("core.users.not_registered_account"));
+            Redirect::redirectPreviousRoute();
+        }
+
+        if (!NewsletterExternalUserModel::getInstance()->deleteExternalUser(EncryptManager::encrypt($user->getEmail()))) {
+            Flash::send(Alert::ERROR, LangManager::translate("core.toaster.error"),
+                LangManager::translate("core.toaster.internalError"));
+        } else {
+
+            Flash::send(Alert::SUCCESS, LangManager::translate("core.toaster.success"),
+                LangManager::translate("newsletter.flash.externalUsersDeleted"));
+        }
+        Redirect::redirectPreviousRoute();
+    }
+
+    #[Link("/manage/external/users/add", Link::POST, [], "/cmw-admin/newsletter")]
+    public function newsletterExternalUsersAdd(): void
+    {
+        UsersController::redirectIfNotHavePermissions("core.dashboard", "newsletter.external.users.add");
+
+        [$email] = Utils::filterInput("email");
+
+        $email = EncryptManager::encrypt($email);
+
+        if (!NewsletterExternalUserModel::getInstance()->createExternalUser($email)) {
+            Flash::send(Alert::ERROR, LangManager::translate("core.toaster.error"),
+                LangManager::translate("core.toaster.internalError"));
+        } else {
+
+            Flash::send(Alert::SUCCESS, LangManager::translate("core.toaster.success"),
+                LangManager::translate("newsletter.flash.externalUsersAdded"));
+        }
         Redirect::redirectPreviousRoute();
     }
 

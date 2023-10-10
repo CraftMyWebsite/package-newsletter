@@ -17,6 +17,8 @@ return [
         "error-captcha" => "Merci de compléter le captcha",
         "error-sender" => "Vous n'avez pas définie de mail d'envoie ou de nom d'affichage !",
         "error-config" => "Il y à un problème dans votre configuration SMTP !",
+        "externalUsersAdded" => "Utilisateur ajouté",
+        "externalUsersDeleted" => "Utilisateur supprimé",
     ],
     "admin" => [
         "settings" => "Réglages",
@@ -28,9 +30,17 @@ return [
         "author" => "Auteur",
         "object" => "Objet",
         "date" => "Date",
+        "dateCreated" => "Date d'ajout",
         "subscriber" => "Abonné(e)s",
         "mail" => "E-Mail",
         "mail-sender" => "Mails d'envoie :",
         "name-sender" => "Nom d'affichage :",
+        "externalUsers" => [
+            "title" => "Utilisateurs externes",
+            "add" => [
+                "title" => "Ajouter un utilisateur externe",
+
+            ]
+        ]
     ],
 ];
