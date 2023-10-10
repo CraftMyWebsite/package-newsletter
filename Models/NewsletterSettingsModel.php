@@ -3,11 +3,9 @@
 namespace CMW\Model\Newsletter;
 
 
-use CMW\Entity\Newsletter\NewsletterEntity;
 use CMW\Entity\Newsletter\NewsletterSettingEntity;
 use CMW\Manager\Database\DatabaseManager;
 use CMW\Manager\Package\AbstractModel;
-use CMW\Model\Users\UsersModel;
 
 
 /**
@@ -33,6 +31,10 @@ class NewsletterSettingsModel extends AbstractModel
 
         $res = $res->fetch();
 
+        if (!$res) {
+            return null;
+        }
+
         return new NewsletterSettingEntity(
             $res['newsletter_settings_email'],
             $res['newsletter_settings_sender_name']
@@ -41,20 +43,26 @@ class NewsletterSettingsModel extends AbstractModel
 
     public function updateConfig(string $mail, string $name): ?NewsletterSettingEntity
     {
-        $info = array(
+        $info = [
             "mail" => $mail,
             "name" => $name,
-        );
+        ];
 
-        $sql = "UPDATE cmw_newsletter_settings SET newsletter_settings_email = :mail, newsletter_settings_sender_name = :name";
+        if ($this->getConfig() === null){
+            $sql = "INSERT INTO cmw_newsletter_settings (newsletter_settings_email, newsletter_settings_sender_name) 
+                    VALUES (:mail, :name)";
+        } else {
+            $sql = "UPDATE cmw_newsletter_settings SET newsletter_settings_email = :mail, newsletter_settings_sender_name = :name";
+        }
 
         $db = DatabaseManager::getInstance();
         $req = $db->prepare($sql);
-        if ($req->execute($info)) {
-            return $this->getConfig();
+
+        if (!$req->execute($info)) {
+            return null;
         }
 
-        return null;
+        return $this->getConfig();
     }
 
 }

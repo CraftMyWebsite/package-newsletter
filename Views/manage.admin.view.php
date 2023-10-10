@@ -7,7 +7,7 @@ use CMW\Utils\Website;
 $title = LangManager::translate("newsletter.title");
 $description = LangManager::translate("newsletter.description");
 
-/* @var \CMW\Entity\Newsletter\NewsletterSettingEntity $config */
+/* @var \CMW\Entity\Newsletter\NewsletterSettingEntity|null $config */
 /** @var \CMW\Entity\Newsletter\NewsletterEntity[] $newsLetter */
 /** @var \CMW\Entity\Newsletter\NewsletterUserEntity[] $newsLetterUser */
 ?>
@@ -30,14 +30,14 @@ $description = LangManager::translate("newsletter.description");
                     <h6><?= LangManager::translate("newsletter.admin.mail-sender") ?></h6>
                     <div class="form-group position-relative has-icon-left">
                         <input type="text" class="form-control" name="mail" required
-                               placeholder="no_reply@mail.com" value="<?= $config->getSenderMail() ?>">
+                               placeholder="no_reply@mail.com" value="<?= $config?->getSenderMail() ?>">
                         <div class="form-control-icon">
                             <i class="fa-solid fa-at"></i>
                         </div>
                     </div>
                     <h6><?= LangManager::translate("newsletter.admin.name-sender") ?></h6>
                     <div class="form-group position-relative has-icon-left">
-                        <input type="text" class="form-control" name="name" value="<?= $config->getSenderName() ?>" required
+                        <input type="text" class="form-control" name="name" value="<?= $config?->getSenderName() ?>" required
                                placeholder="Newsletter <?= Website::getWebsiteName()?>">
                         <div class="form-control-icon">
                             <i class="fa-solid fa-signature"></i>
