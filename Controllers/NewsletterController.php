@@ -174,6 +174,7 @@ class NewsletterController extends AbstractController
     public function unsubscribeNewsletter(Request $request, string $key): void
     {
         NewsletterUserModel::getInstance()->deleteUser($key);
+        NewsletterUserModel::getInstance()->deleteExternalUser($key);
 
         Flash::send(Alert::SUCCESS, LangManager::translate("core.toaster.success"), LangManager::translate("newsletter.flash.bye"));
 

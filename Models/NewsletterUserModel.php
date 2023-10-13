@@ -92,12 +92,25 @@ class NewsletterUserModel extends AbstractModel
     }
 
     /**
-     * @param int $userMail
+     * @param int $newsletter_user_key
      * @return void
      */
     public function deleteUser(string $newsletter_user_key): void
     {
         $sql = "DELETE FROM cmw_newsletter_users WHERE newsletter_user_key=:newsletter_user_key";
+
+        $db = DatabaseManager::getInstance();
+        $req = $db->prepare($sql);
+        $req->execute(array("newsletter_user_key" => $newsletter_user_key));
+    }
+
+    /**
+     * @param int $newsletter_user_key
+     * @return void
+     */
+    public function deleteExternalUser(string $newsletter_user_key): void
+    {
+        $sql = "DELETE FROM cmw_newsletter_external_users WHERE unique_key=:newsletter_user_key";
 
         $db = DatabaseManager::getInstance();
         $req = $db->prepare($sql);
