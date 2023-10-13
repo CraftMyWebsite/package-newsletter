@@ -45,9 +45,9 @@ class NewsletterController extends AbstractController
         $externalUsers = NewsletterExternalUserModel::getInstance()->getExternalUsers();
 
         View::createAdminView('Newsletter', 'manage')
-            ->addStyle("Admin/Resources/Vendors/Simple-datatables/style.css", "Admin/Resources/Assets/Css/Pages/simple-datatables.css")
+            ->addStyle("Admin/Resources/Vendors/Simple-datatables/style.css", "Admin/Resources/Assets/Css/Pages/simple-datatables.css","Admin/Resources/Vendors/Izitoast/iziToast.min.css")
             ->addScriptAfter("Admin/Resources/Vendors/Simple-datatables/Umd/simple-datatables.js",
-                "Admin/Resources/Assets/Js/Pages/simple-datatables.js")
+                "Admin/Resources/Assets/Js/Pages/simple-datatables.js","App/Package/Newsletter/Views/Resources/sendMail.js","Admin/Resources/Vendors/Izitoast/iziToast.min.js")
             ->addScriptBefore("Admin/Resources/Vendors/Tinymce/tinymce.min.js",
                 "Admin/Resources/Vendors/Tinymce/Config/full.js")
             ->addVariableList(["newsLetter" => $newsLetter, "newsLetterUser" => $newsLetterUser, "config" => $config,
@@ -55,7 +55,7 @@ class NewsletterController extends AbstractController
             ->view();
     }
 
-    #[Link("/manage", Link::POST, [], "/cmw-admin/newsletter")]
+    #[Link("/manage", Link::POST, [], "/cmw-admin/newsletter", secure: false)]
     public function newsletterPost(): void
     {
         UsersController::redirectIfNotHavePermissions("core.dashboard", "newsletter.send");
@@ -63,39 +63,25 @@ class NewsletterController extends AbstractController
         $config = NewsletterSettingsModel::getInstance()->getConfig();
 
         if ($config === null) {
-            Flash::send(Alert::ERROR, LangManager::translate("core.toaster.error"),
-                LangManager::translate("newsletter.flash.error-config"));
-            Redirect::redirectPreviousRoute();
+            echo json_encode(array("status" => "error", "message" => LangManager::translate("newsletter.flash.error-sender")));
+        } else if (!MailModel::getInstance()->getConfig()?->isEnable()) {
+            echo json_encode(array("status" => "error", "message" => LangManager::translate("newsletter.flash.error-config")));
+        } else {
+            $i = 0;
+            [$newsletter_object, $newsletter_content] = Utils::filterInput("newsletter_object", "newsletter_content");
+            $user_id = UsersModel::getCurrentUser()?->getId();
+            $url = Website::getProtocol() . '://' . $_SERVER['SERVER_NAME'] . EnvManager::getInstance()->getValue("PATH_SUBFOLDER") . 'newsletter/unsubscribe/';
+            foreach (NewsletterUserModel::getInstance()->getNewsletterUsers() as $mail) {
+                MailController::getInstance()->sendMailWithSender($config->getSenderMail(), $config->getSenderName(), $mail->getMail(), $newsletter_object, $newsletter_content . "<br><br><small><a href='" . $url . $mail->getKey() . "' target='_blank'>" . LangManager::translate("newsletter.unsubscribe") . "</a></small>");
+                $i++;
+            }
+            foreach (NewsletterExternalUserModel::getInstance()->getExternalUsers() as $externalUser) {
+                MailController::getInstance()->sendMailWithSender($config->getSenderMail(), $config->getSenderName(), $externalUser->getEmail(), $newsletter_object, $newsletter_content . "<br><br><small><a href='" . $url . $externalUser->getKey() . "' target='_blank'>" . LangManager::translate("newsletter.unsubscribe") . "</a></small>");
+                $i++;
+            }
+            NewsletterModel::getInstance()->createNewsletter($user_id, $newsletter_object, $newsletter_content);
+            echo json_encode(array("status" => "success", "message" => LangManager::translate("newsletter.flash.sendTo") . $i . LangManager::translate("newsletter.flash.users")));
         }
-
-        $i = 0;
-        [$newsletter_object, $newsletter_content] = Utils::filterInput("newsletter_object", "newsletter_content");
-        $user_id = UsersModel::getCurrentUser()?->getId();
-
-        $url = Website::getProtocol() . '://' . $_SERVER['SERVER_NAME'] . EnvManager::getInstance()->getValue("PATH_SUBFOLDER") . 'newsletter/unsubscribe/';
-
-        if (!MailModel::getInstance()->getConfig()?->isEnable()) {
-            Flash::send(Alert::ERROR, LangManager::translate("core.toaster.error"),
-                LangManager::translate("newsletter.flash.error-sender"));
-            Redirect::redirectPreviousRoute();
-        }
-
-        foreach (NewsletterUserModel::getInstance()->getNewsletterUsers() as $mail) {
-            MailController::getInstance()->sendMailWithSender($config->getSenderMail(), $config->getSenderName(), $mail->getMail(), $newsletter_object, $newsletter_content . "<br><br><small><a href='" . $url . $mail->getKey() . "' target='_blank'>" . LangManager::translate("newsletter.unsubscribe") . "</a></small>");
-            $i++;
-        }
-
-        foreach (NewsletterExternalUserModel::getInstance()->getExternalUsers() as $externalUser) {
-            MailController::getInstance()->sendMailWithSender($config->getSenderMail(), $config->getSenderName(), $externalUser->getEmail(), $newsletter_object, $newsletter_content . "<br><br><small><a href='" . $url . $externalUser->getKey() . "' target='_blank'>" . LangManager::translate("newsletter.unsubscribe") . "</a></small>");
-            $i++;
-        }
-
-        NewsletterModel::getInstance()->createNewsletter($user_id, $newsletter_object, $newsletter_content);
-        Flash::send(Alert::SUCCESS, LangManager::translate("core.toaster.success"),
-            LangManager::translate("newsletter.flash.sendTo") . $i . LangManager::translate("newsletter.flash.users"));
-
-
-        Redirect::redirectPreviousRoute();
     }
 
     #[Link("/settings", Link::POST, [], "/cmw-admin/newsletter")]

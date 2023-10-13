@@ -57,20 +57,20 @@ $description = LangManager::translate("newsletter.description");
                 <h4><?= LangManager::translate("newsletter.admin.new_title") ?></h4>
             </div>
             <div class="card-body">
-                <form action="" method="post">
+                <form id="sendMail" method="post">
                     <?php (new SecurityManager())->insertHiddenToken() ?>
                     <h6>Objet :</h6>
                     <div class="form-group position-relative has-icon-left">
-                        <input type="text" class="form-control" name="newsletter_object" required
+                        <input type="text" class="form-control" name="newsletter_object" id="newsletter_object" required
                                placeholder="<?= LangManager::translate("newsletter.admin.new_title") ?>">
                         <div class="form-control-icon">
                             <i class="fa-solid fa-envelope-open"></i>
                         </div>
                     </div>
                     <h6><?= LangManager::translate("newsletter.admin.content") ?> :</h6>
-                    <textarea class="tinymce" name="newsletter_content"></textarea>
+                    <textarea class="tinymce" name="newsletter_content" id="newsletter_content"></textarea>
                     <div class="text-center mt-2">
-                        <button type="submit" class="btn btn-primary"><?= LangManager::translate("newsletter.admin.send") ?></button>
+                        <button type="submit" id="sendButton" class="btn btn-primary"><?= LangManager::translate("newsletter.admin.send") ?></button>
                     </div>
                 </form>
             </div>
