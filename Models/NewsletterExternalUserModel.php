@@ -85,6 +85,25 @@ class NewsletterExternalUserModel extends AbstractModel
         return $db->lastInsertId();
     }
 
+    public function isExternalUserExist(string $email): bool
+    {
+        $sql = "SELECT email FROM cmw_newsletter_external_users WHERE email = :email";
+        $db = DatabaseManager::getInstance();
+        $req = $db->prepare($sql);
+
+        if (!$req->execute(['email' => $email])){
+            return true;
+        }
+
+        $res = $req->fetchAll();
+
+        if (!$res){
+            return false;
+        }
+
+        return count($res) >= 1;
+    }
+
     /**
      * @param string $email (encrypted email) see {@CMW\Manager\Security\EncryptManager}
      * @return bool
