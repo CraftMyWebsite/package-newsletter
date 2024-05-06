@@ -40,7 +40,20 @@ return [
             "add" => [
                 "title" => "Ajouter un utilisateur externe",
 
-            ]
-        ]
+            ],
+        ],
+    ],
+    "permissions" => [
+        "newsletter" => [
+            "send" => "Envoyer une newsletter",
+            "show" => "Afficher les newsletter",
+            "settings" => "Gérer les paramètres des newsletter",
+            "external" => [
+                "users" => [
+                    "add" => "Ajouter un utilisateur externe",
+                    "delete" => "Supprimer un utilisateur externe",
+                ],
+            ],
+        ],
     ],
 ];

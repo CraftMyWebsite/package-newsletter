@@ -36,5 +36,25 @@ return [
         "mail" => "E-Mail",
         "mail-sender" => "Sending emails: ",
         "name-sender" => "Display name :",
+        "externalUsers" => [
+            "title" => "External users",
+            "add" => [
+                "title" => "Add an external user",
+
+            ],
+        ],
+    ],
+    "permissions" => [
+        "newsletter" => [
+            "send" => "Send a newsletter",
+            "show" => "Show newsletters",
+            "settings" => "Manager newsletter settings",
+            "external" => [
+                "users" => [
+                    "add" => "Add external user",
+                    "delete" => "Delete external user",
+                ],
+            ],
+        ],
     ],
 ];
