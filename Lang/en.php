@@ -46,9 +46,9 @@ return [
     ],
     "permissions" => [
         "newsletter" => [
-            "send" => "Send a newsletter",
-            "show" => "Show newsletters",
-            "settings" => "Manager newsletter settings",
+            "send" => "Send",
+            "show" => "Show",
+            "settings" => "Manager settings",
             "external" => [
                 "users" => [
                     "add" => "Add external user",

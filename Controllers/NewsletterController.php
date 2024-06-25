@@ -45,9 +45,9 @@ class NewsletterController extends AbstractController
         $externalUsers = NewsletterExternalUserModel::getInstance()->getExternalUsers();
 
         View::createAdminView('Newsletter', 'manage')
-            ->addStyle("Admin/Resources/Vendors/Simple-datatables/style.css", "Admin/Resources/Assets/Css/Pages/simple-datatables.css","Admin/Resources/Vendors/Izitoast/iziToast.min.css")
+            ->addStyle("Admin/Resources/Assets/Css/simple-datatables.css")
             ->addScriptAfter("Admin/Resources/Vendors/Simple-datatables/Umd/simple-datatables.js",
-                "Admin/Resources/Assets/Js/Pages/simple-datatables.js","App/Package/Newsletter/Views/Resources/sendMail.js","Admin/Resources/Vendors/Izitoast/iziToast.min.js")
+                "Admin/Resources/Vendors/Simple-datatables/config-datatables.js","App/Package/Newsletter/Views/Resources/sendMail.js")
             ->addScriptBefore("Admin/Resources/Vendors/Tinymce/tinymce.min.js",
                 "Admin/Resources/Vendors/Tinymce/Config/full.js")
             ->addVariableList(["newsLetter" => $newsLetter, "newsLetterUser" => $newsLetterUser, "config" => $config,
@@ -58,7 +58,7 @@ class NewsletterController extends AbstractController
     #[Link("/manage", Link::POST, [], "/cmw-admin/newsletter", secure: false)]
     public function newsletterPost(): void
     {
-        UsersController::redirectIfNotHavePermissions("core.dashboard", "newsletter.send");
+        UsersController::redirectIfNotHavePermissions("core.dashboard", "newsletter.show.send");
 
         $config = NewsletterSettingsModel::getInstance()->getConfig();
 
@@ -87,7 +87,7 @@ class NewsletterController extends AbstractController
     #[Link("/settings", Link::POST, [], "/cmw-admin/newsletter")]
     public function settingsPost(): void
     {
-        UsersController::redirectIfNotHavePermissions("core.dashboard", "newsletter.settings");
+        UsersController::redirectIfNotHavePermissions("core.dashboard", "newsletter.show.settings");
 
         [$mail, $name] = Utils::filterInput("mail", "name");
 
@@ -101,7 +101,7 @@ class NewsletterController extends AbstractController
     #[Link("/manage/external/users/delete/:id", Link::GET, ['id' => '[0-9+]'], "/cmw-admin/newsletter")]
     public function newsletterExternalUsersDelete(Request $request, int $id): void
     {
-        UsersController::redirectIfNotHavePermissions("core.dashboard", "newsletter.external.users.delete");
+        UsersController::redirectIfNotHavePermissions("core.dashboard", "newsletter.users.delete");
 
         $user = NewsletterExternalUserModel::getInstance()->getExternalUser($id);
 
@@ -125,7 +125,7 @@ class NewsletterController extends AbstractController
     #[Link("/manage/external/users/add", Link::POST, [], "/cmw-admin/newsletter")]
     public function newsletterExternalUsersAdd(): void
     {
-        UsersController::redirectIfNotHavePermissions("core.dashboard", "newsletter.external.users.add");
+        UsersController::redirectIfNotHavePermissions("core.dashboard", "newsletter.users.add");
 
         [$email] = Utils::filterInput("email");
 

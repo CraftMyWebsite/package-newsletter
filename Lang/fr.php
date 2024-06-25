@@ -45,9 +45,9 @@ return [
     ],
     "permissions" => [
         "newsletter" => [
-            "send" => "Envoyer une newsletter",
-            "show" => "Afficher les newsletter",
-            "settings" => "Gérer les paramètres des newsletter",
+            "send" => "Envoyer",
+            "show" => "Afficher",
+            "settings" => "Gérer les paramètres",
             "external" => [
                 "users" => [
                     "add" => "Ajouter un utilisateur externe",
