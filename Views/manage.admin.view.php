@@ -13,76 +13,58 @@ $description = LangManager::translate("newsletter.description");
 /* @var \CMW\Entity\Newsletter\NewsletterExternalUserEntity[] $externalUsers */
 ?>
 
-<div class="d-flex flex-wrap justify-content-between">
-    <h3><i class="fa-solid fa-bullhorn"></i> <span
-                class="m-lg-auto"><?= LangManager::translate("newsletter.title") ?></span></h3>
-</div>
+<h3><i class="fa-solid fa-bullhorn"></i> <?= LangManager::translate("newsletter.title") ?></h3>
 
-
-<section class="row">
-    <div class="col-12 col-lg-3">
-        <div class="card">
-            <div class="card-header">
-                <h4><?= LangManager::translate("newsletter.admin.settings") ?></h4>
+<div class="grid-2">
+    <div class="card">
+        <div class="lg:flex justify-between">
+            <h6><?= LangManager::translate("newsletter.admin.new_title") ?></h6>
+            <button form="sendMail" id="sendButton" type="submit" class="btn-primary"><?= LangManager::translate("core.btn.send") ?></button>
+        </div>
+        <form id="sendMail" method="post">
+            <?php (new SecurityManager())->insertHiddenToken() ?>
+            <label for="newsletter_object">Objet :</label>
+            <div class="input-group">
+                <i class="fa-solid fa-envelope-open"></i>
+                <input type="text" name="newsletter_object" id="newsletter_object" required
+                       placeholder="<?= LangManager::translate("newsletter.admin.new_title") ?>">
             </div>
-            <div class="card-body">
-                <form action="settings" method="post">
-                    <?php (new SecurityManager())->insertHiddenToken() ?>
-                    <h6><?= LangManager::translate("newsletter.admin.mail-sender") ?></h6>
-                    <div class="form-group position-relative has-icon-left">
-                        <input type="text" class="form-control" name="mail" required
-                               placeholder="no_reply@mail.com" value="<?= $config?->getSenderMail() ?>">
-                        <div class="form-control-icon">
+            <label for="newsletter_content"><?= LangManager::translate("newsletter.admin.content") ?> :</label>
+            <textarea name="newsletter_content" id="newsletter_content" class="tinymce"></textarea>
+        </form>
+    </div>
+    <div>
+        <div class="card">
+            <div class="lg:flex justify-between">
+                <h6><?= LangManager::translate("newsletter.admin.settings") ?></h6>
+                <button form="settings" type="submit" class="btn-primary"><?= LangManager::translate("core.btn.save") ?></button>
+            </div>
+            <form id="settings" action="settings" method="post">
+                <?php (new SecurityManager())->insertHiddenToken() ?>
+                <div class="grid-2">
+                    <div>
+                        <label for="mail"><?= LangManager::translate("newsletter.admin.mail-sender") ?></label>
+                        <div class="input-group">
                             <i class="fa-solid fa-at"></i>
+                            <input type="text" id="mail" name="mail" required
+                                   placeholder="no_reply@mail.com" value="<?= $config?->getSenderMail() ?>">
                         </div>
                     </div>
-                    <h6><?= LangManager::translate("newsletter.admin.name-sender") ?></h6>
-                    <div class="form-group position-relative has-icon-left">
-                        <input type="text" class="form-control" name="name" value="<?= $config?->getSenderName() ?>" required
-                               placeholder="Newsletter <?= Website::getWebsiteName()?>">
-                        <div class="form-control-icon">
+                    <div>
+                        <label for="name"><?= LangManager::translate("newsletter.admin.name-sender") ?></label>
+                        <div class="input-group">
                             <i class="fa-solid fa-signature"></i>
+                            <input type="text" id="name" name="name" value="<?= $config?->getSenderName() ?>" required
+                                   placeholder="Newsletter <?= Website::getWebsiteName()?>">
                         </div>
                     </div>
-                    <div class="text-center mt-2">
-                        <button type="submit" class="btn btn-primary"><?= LangManager::translate("core.btn.save") ?></button>
-                    </div>
-                </form>
-            </div>
+                </div>
+            </form>
         </div>
-    </div>
-    <div class="col-12 col-lg-9">
-        <div class="card">
-            <div class="card-header">
-                <h4><?= LangManager::translate("newsletter.admin.new_title") ?></h4>
-            </div>
-            <div class="card-body">
-                <form id="sendMail" method="post">
-                    <?php (new SecurityManager())->insertHiddenToken() ?>
-                    <h6>Objet :</h6>
-                    <div class="form-group position-relative has-icon-left">
-                        <input type="text" class="form-control" name="newsletter_object" id="newsletter_object" required
-                               placeholder="<?= LangManager::translate("newsletter.admin.new_title") ?>">
-                        <div class="form-control-icon">
-                            <i class="fa-solid fa-envelope-open"></i>
-                        </div>
-                    </div>
-                    <h6><?= LangManager::translate("newsletter.admin.content") ?> :</h6>
-                    <textarea class="tinymce" name="newsletter_content" id="newsletter_content"></textarea>
-                    <div class="text-center mt-2">
-                        <button type="submit" id="sendButton" class="btn btn-primary"><?= LangManager::translate("newsletter.admin.send") ?></button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-    <div class="col-12 col-lg-6">
-        <div class="card">
-            <div class="card-header">
-                <h4><?= LangManager::translate("newsletter.admin.alreadySent") ?></h4>
-            </div>
-            <div class="card-body">
-                <table class="table" id="table2">
+        <div class="card mt-4">
+            <h6><?= LangManager::translate("newsletter.admin.alreadySent") ?></h6>
+            <div class="table-container table-container-striped">
+                <table id="table1">
                     <thead>
                     <tr>
                         <th class="text-center"><?= LangManager::translate("newsletter.admin.author") ?></th>
@@ -102,101 +84,86 @@ $description = LangManager::translate("newsletter.description");
                 </table>
             </div>
         </div>
+
     </div>
-    <div class="col-12 col-lg-6">
-        <div class="card">
-            <div class="card-header">
-                <h4><?= LangManager::translate("newsletter.admin.subscriber") ?></h4>
-            </div>
-            <div class="card-body">
-                <table class="table" id="table1">
-                    <thead>
+</div>
+
+
+<div class="grid-2 mt-4">
+    <div class="card">
+        <h6><?= LangManager::translate("newsletter.admin.subscriber") ?></h6>
+        <div class="table-container table-container-striped">
+            <table class="table" id="table2">
+                <thead>
+                <tr>
+                    <th class="text-center"><?= LangManager::translate("newsletter.admin.mail") ?></th>
+                    <th class="text-center"><?= LangManager::translate("newsletter.admin.date") ?></th>
+                </tr>
+                </thead>
+                <tbody class="text-center">
+                <?php foreach ($newsLetterUser as $user) : ?>
                     <tr>
-                        <th class="text-center"><?= LangManager::translate("newsletter.admin.mail") ?></th>
-                        <th class="text-center"><?= LangManager::translate("newsletter.admin.date") ?></th>
+                        <td><?= $user->getMail() ?></td>
+                        <td><?= $user->getCreated() ?></td>
                     </tr>
-                    </thead>
-                    <tbody class="text-center">
-                    <?php foreach ($newsLetterUser as $user) : ?>
-                        <tr>
-                            <td><?= $user->getMail() ?></td>
-                            <td><?= $user->getCreated() ?></td>
-                        </tr>
-                    <?php endforeach; ?>
-                    </tbody>
-                </table>
-            </div>
+                <?php endforeach; ?>
+                </tbody>
+            </table>
         </div>
     </div>
 
-    <div class="col-12 col-lg-12">
-        <div class="card">
-            <div class="card-header d-flex">
-                <h4 class="col-11"><?= LangManager::translate("newsletter.admin.externalUsers.title") ?></h4>
-                <button type="button" data-bs-toggle="modal" data-bs-target="#addModal" class="btn btn-primary">
-                    <i class="fas fa-add"></i> <?= LangManager::translate('core.btn.add') ?>
-                </button>
-            </div>
-            <div class="card-body">
-                <table class="table" id="table2">
-                    <thead>
+    <div class="card">
+        <div class="lg:flex justify-between">
+            <h6 class="col-11"><?= LangManager::translate("newsletter.admin.externalUsers.title") ?></h6>
+            <button data-modal-toggle="modal-add" class="btn-primary" type="button"><i class="fas fa-add"></i> <?= LangManager::translate('core.btn.add') ?></button>
+        </div>
+        <div class="table-container table-container-striped">
+            <table class="table" id="table3">
+                <thead>
+                <tr>
+                    <th class="text-center"><?= LangManager::translate("newsletter.admin.mail") ?></th>
+                    <th class="text-center"><?= LangManager::translate("newsletter.admin.dateCreated") ?></th>
+                    <th class="text-center"></th>
+                </tr>
+                </thead>
+                <tbody class="text-center">
+                <?php foreach ($externalUsers as $externaluser) : ?>
                     <tr>
-                        <th class="text-center"><?= LangManager::translate("newsletter.admin.mail") ?></th>
-                        <th class="text-center"><?= LangManager::translate("newsletter.admin.dateCreated") ?></th>
-                        <th class="text-center"></th>
+                        <td><?= $externaluser->getEmail() ?></td>
+                        <td><?= $externaluser->getDateCreatedFormatted() ?></td>
+                        <td>
+                            <a href="manage/external/users/delete/<?= $externaluser->getId() ?>" class="text-danger">
+                                <i class="fas fa-trash"></i>
+                            </a>
+                        </td>
                     </tr>
-                    </thead>
-                    <tbody class="text-center">
-                    <?php foreach ($externalUsers as $externaluser) : ?>
-                        <tr>
-                            <td><?= $externaluser->getEmail() ?></td>
-                            <td><?= $externaluser->getDateCreatedFormatted() ?></td>
-                            <td>
-                                <a href="manage/external/users/delete/<?= $externaluser->getId() ?>" class="text-danger">
-                                    <i class="fas fa-trash"></i>
-                                </a>
-                            </td>
-                        </tr>
-                    <?php endforeach; ?>
-                    </tbody>
-                </table>
-            </div>
+                <?php endforeach; ?>
+                </tbody>
+            </table>
         </div>
     </div>
-</section>
+</div>
 
 
-<!-- Modal Add -->
-<div class="modal fade" id="addModal" tabindex="-1" role="dialog" aria-labelledby="addModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <form action="manage/external/users/add" method="post">
-                <?php (new SecurityManager())->insertHiddenToken(); ?>
-                <div class="modal-header">
-                    <h5 class="modal-title" id="addModalLabel"><?= LangManager::translate('newsletter.admin.externalUsers.add.title') ?></h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <h6><?= LangManager::translate('users.users.mail') ?> :</h6>
-                    <div class="form-group position-relative has-icon-left">
-                        <input type="email" class="form-control" name="email" autocomplete="off"
-                               placeholder="teyir@exemple.com" required="">
-                        <div class="form-control-icon">
-                            <i class="fa-solid fa-at"></i>
-                        </div>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-                        <?= LangManager::translate('core.btn.close') ?>
-                    </button>
-                    <button type="submit" class="btn btn-primary">
-                        <?= LangManager::translate('core.btn.save') ?>
-                    </button>
-                </div>
-            </form>
+<div id="modal-add" class="modal-container">
+    <div class="modal">
+        <div class="modal-header">
+            <h6>Titre de la modal</h6>
+            <button type="button" data-modal-hide="modal-add"><i class="fa-solid fa-xmark"></i></button>
         </div>
+        <form action="manage/external/users/add" method="post">
+            <?php (new SecurityManager())->insertHiddenToken(); ?>
+            <div class="modal-body">
+                <label for="email"><?= LangManager::translate('users.users.mail') ?> :</label>
+                <div class="input-group">
+                    <i class="fa-solid fa-at"></i>
+                    <input type="email" id="email" name="email" autocomplete="off"
+                           placeholder="teyir@exemple.com" required="">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="submit" class="btn-primary"><?= LangManager::translate('core.btn.save') ?></button>
+            </div>
+        </form>
     </div>
 </div>
