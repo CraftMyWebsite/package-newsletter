@@ -46,7 +46,7 @@ class NewsletterController extends AbstractController
 
         View::createAdminView('Newsletter', 'manage')
             ->addStyle("Admin/Resources/Assets/Css/simple-datatables.css")
-            ->addScriptAfter("Admin/Resources/Vendors/Simple-datatables/Umd/simple-datatables.js",
+            ->addScriptAfter("Admin/Resources/Vendors/Simple-datatables/simple-datatables.js",
                 "Admin/Resources/Vendors/Simple-datatables/config-datatables.js","App/Package/Newsletter/Views/Resources/sendMail.js")
             ->addScriptBefore("Admin/Resources/Vendors/Tinymce/tinymce.min.js",
                 "Admin/Resources/Vendors/Tinymce/Config/full.js")
