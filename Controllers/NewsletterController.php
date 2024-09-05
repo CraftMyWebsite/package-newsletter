@@ -10,7 +10,7 @@ use CMW\Manager\Flash\Alert;
 use CMW\Manager\Flash\Flash;
 use CMW\Manager\Lang\LangManager;
 use CMW\Manager\Package\AbstractController;
-use CMW\Manager\Requests\Request;
+
 use CMW\Manager\Router\Link;
 use CMW\Manager\Security\EncryptManager;
 use CMW\Manager\Views\View;
@@ -99,7 +99,7 @@ class NewsletterController extends AbstractController
     }
 
     #[Link("/manage/external/users/delete/:id", Link::GET, ['id' => '[0-9+]'], "/cmw-admin/newsletter")]
-    public function newsletterExternalUsersDelete(Request $request, int $id): void
+    public function newsletterExternalUsersDelete(int $id): void
     {
         UsersController::redirectIfNotHavePermissions("core.dashboard", "newsletter.users.delete");
 
@@ -171,7 +171,7 @@ class NewsletterController extends AbstractController
     }
 
     #[Link("/unsubscribe/:key", Link::GET, ["id" => "[0-9]+"], "/newsletter")]
-    public function unsubscribeNewsletter(Request $request, string $key): void
+    public function unsubscribeNewsletter(string $key): void
     {
         NewsletterUserModel::getInstance()->deleteUser($key);
         NewsletterUserModel::getInstance()->deleteExternalUser($key);
