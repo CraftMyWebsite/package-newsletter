@@ -1,4 +1,5 @@
-<?php use CMW\Controller\Core\SecurityController;
+<?php
+use CMW\Controller\Core\SecurityController;
 use CMW\Manager\Security\SecurityManager;
 ?>
 

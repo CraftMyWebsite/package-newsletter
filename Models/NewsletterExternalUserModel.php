@@ -14,7 +14,7 @@ class NewsletterExternalUserModel extends AbstractModel
      */
     public function getExternalUsers(): array
     {
-        $sql = "SELECT * FROM cmw_newsletter_external_users";
+        $sql = 'SELECT * FROM cmw_newsletter_external_users';
         $db = DatabaseManager::getInstance();
         $req = $db->query($sql);
 
@@ -45,7 +45,7 @@ class NewsletterExternalUserModel extends AbstractModel
      */
     public function getExternalUser(int $id): ?NewsletterExternalUserEntity
     {
-        $sql = "SELECT * FROM cmw_newsletter_external_users WHERE id = :id";
+        $sql = 'SELECT * FROM cmw_newsletter_external_users WHERE id = :id';
         $db = DatabaseManager::getInstance();
         $req = $db->prepare($sql);
 
@@ -74,7 +74,7 @@ class NewsletterExternalUserModel extends AbstractModel
      */
     public function createExternalUser(string $email): false|int
     {
-        $sql = "INSERT INTO cmw_newsletter_external_users (email, unique_key) VALUES (:email, :unique_key)";
+        $sql = 'INSERT INTO cmw_newsletter_external_users (email, unique_key) VALUES (:email, :unique_key)';
         $db = DatabaseManager::getInstance();
         $req = $db->prepare($sql);
 
@@ -87,17 +87,17 @@ class NewsletterExternalUserModel extends AbstractModel
 
     public function isExternalUserExist(string $email): bool
     {
-        $sql = "SELECT email FROM cmw_newsletter_external_users WHERE email = :email";
+        $sql = 'SELECT email FROM cmw_newsletter_external_users WHERE email = :email';
         $db = DatabaseManager::getInstance();
         $req = $db->prepare($sql);
 
-        if (!$req->execute(['email' => $email])){
+        if (!$req->execute(['email' => $email])) {
             return true;
         }
 
         $res = $req->fetchAll();
 
-        if (!$res){
+        if (!$res) {
             return false;
         }
 
@@ -110,7 +110,7 @@ class NewsletterExternalUserModel extends AbstractModel
      */
     public function deleteExternalUser(string $email): bool
     {
-        $sql = "DELETE FROM cmw_newsletter_external_users WHERE email = :email";
+        $sql = 'DELETE FROM cmw_newsletter_external_users WHERE email = :email';
         $db = DatabaseManager::getInstance();
         $req = $db->prepare($sql);
 

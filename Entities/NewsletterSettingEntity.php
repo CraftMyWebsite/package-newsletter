@@ -6,7 +6,6 @@ use CMW\Controller\Core\CoreController;
 
 class NewsletterSettingEntity
 {
-
     private ?string $newsletter_settings_email;
     private ?string $newsletter_settings_sender_name;
 
@@ -19,7 +18,6 @@ class NewsletterSettingEntity
         $this->newsletter_settings_email = $newsletter_settings_email;
         $this->newsletter_settings_sender_name = $newsletter_settings_sender_name;
     }
-
 
     /**
      * @return string
@@ -36,5 +34,4 @@ class NewsletterSettingEntity
     {
         return $this->newsletter_settings_sender_name;
     }
-
 }

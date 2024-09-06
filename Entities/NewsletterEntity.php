@@ -68,5 +68,4 @@ class NewsletterEntity
     {
         return CoreController::formatDate($this->newsletter_created);
     }
-
 }
