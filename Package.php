@@ -4,7 +4,6 @@ namespace CMW\Package\Newsletter;
 
 use CMW\Manager\Package\IPackageConfig;
 use CMW\Manager\Package\PackageMenuType;
-use CMW\Manager\Package\PackageSubMenuType;
 
 class Package implements IPackageConfig
 {
@@ -37,21 +36,12 @@ class Package implements IPackageConfig
     {
         return [
             new PackageMenuType(
-                lang: 'fr',
                 icon: 'fas fa-bullhorn',
                 title: 'Newsletter',
                 url: 'newsletter/manage',
                 permission: 'newsletter.show',
                 subMenus: []
             ),
-            new PackageMenuType(
-                lang: 'en',
-                icon: 'fas fa-bullhorn',
-                title: 'Newsletter',
-                url: 'newsletter/manage',
-                permission: 'newsletter.show',
-                subMenus: []
-            )
         ];
     }
 
