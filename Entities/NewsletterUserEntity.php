@@ -2,7 +2,7 @@
 
 namespace CMW\Entity\Newsletter;
 
-use CMW\Controller\Core\CoreController;
+use CMW\Utils\Date;
 
 class NewsletterUserEntity
 {
@@ -53,6 +53,6 @@ class NewsletterUserEntity
      */
     public function getCreated(): string
     {
-        return CoreController::formatDate($this->newsletter_users_created);
+        return Date::formatDate($this->newsletter_users_created);
     }
 }

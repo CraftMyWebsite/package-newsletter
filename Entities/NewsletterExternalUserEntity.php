@@ -2,7 +2,7 @@
 
 namespace CMW\Entity\Newsletter;
 
-use CMW\Controller\Core\CoreController;
+use CMW\Utils\Date;
 
 class NewsletterExternalUserEntity
 {
@@ -65,7 +65,7 @@ class NewsletterExternalUserEntity
      */
     public function getDateCreatedFormatted(): string
     {
-        return CoreController::formatDate($this->dateCreated);
+        return Date::formatDate($this->dateCreated);
     }
 
     /**
@@ -81,6 +81,6 @@ class NewsletterExternalUserEntity
      */
     public function getDateUpdatedFormatted(): string
     {
-        return CoreController::formatDate($this->dateUpdated);
+        return Date::formatDate($this->dateUpdated);
     }
 }
