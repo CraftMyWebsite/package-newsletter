@@ -234,4 +234,10 @@ class NewsletterController extends AbstractController
 
         Redirect::redirectToHome();
     }
+
+    #[Link('', Link::GET, ['id' => '[0-9]+'], '/newsletter')]
+    private function newsletterView(): void
+    {
+        View::createPublicView('Newsletter', 'main')->view();
+    }
 }
