@@ -9,6 +9,7 @@ use CMW\Manager\Env\EnvManager;
 use CMW\Manager\Flash\Alert;
 use CMW\Manager\Flash\Flash;
 use CMW\Manager\Lang\LangManager;
+use CMW\Manager\Mail\MailManager;
 use CMW\Manager\Package\AbstractController;
 use CMW\Manager\Router\Link;
 use CMW\Manager\Security\EncryptManager;
@@ -82,11 +83,11 @@ class NewsletterController extends AbstractController
             $user_id = UsersModel::getCurrentUser()?->getId();
             $url = Website::getProtocol() . '://' . $_SERVER['SERVER_NAME'] . EnvManager::getInstance()->getValue('PATH_SUBFOLDER') . 'newsletter/unsubscribe/';
             foreach (NewsletterUserModel::getInstance()->getNewsletterUsers() as $mail) {
-                MailController::getInstance()->sendMailWithSender($config->getSenderMail(), $config->getSenderName(), $mail->getMail(), $newsletter_object, $newsletter_content . "<br><br><small><a href='" . $url . $mail->getKey() . "' target='_blank'>" . LangManager::translate('newsletter.unsubscribe') . '</a></small>');
+                MailManager::getInstance()->sendMailWithSender($config->getSenderMail(), $config->getSenderName(), $mail->getMail(), $newsletter_object, $newsletter_content . "<br><br><small><a href='" . $url . $mail->getKey() . "' target='_blank'>" . LangManager::translate('newsletter.unsubscribe') . '</a></small>');
                 $i++;
             }
             foreach (NewsletterExternalUserModel::getInstance()->getExternalUsers() as $externalUser) {
-                MailController::getInstance()->sendMailWithSender($config->getSenderMail(), $config->getSenderName(), $externalUser->getEmail(), $newsletter_object, $newsletter_content . "<br><br><small><a href='" . $url . $externalUser->getKey() . "' target='_blank'>" . LangManager::translate('newsletter.unsubscribe') . '</a></small>');
+                MailManager::getInstance()->sendMailWithSender($config->getSenderMail(), $config->getSenderName(), $externalUser->getEmail(), $newsletter_object, $newsletter_content . "<br><br><small><a href='" . $url . $externalUser->getKey() . "' target='_blank'>" . LangManager::translate('newsletter.unsubscribe') . '</a></small>');
                 $i++;
             }
             NewsletterModel::getInstance()->createNewsletter($user_id, $newsletter_object, $newsletter_content);
