@@ -2,9 +2,10 @@
 
 namespace CMW\Entity\Newsletter;
 
+use CMW\Manager\Package\AbstractEntity;
 use CMW\Utils\Date;
 
-class NewsletterUserEntity
+class NewsletterUserEntity extends AbstractEntity
 {
     private int $newsletter_users_id;
     private string $newsletter_users_mail;
@@ -14,6 +15,7 @@ class NewsletterUserEntity
     /**
      * @param int $newsletter_users_id
      * @param string $newsletter_users_mail
+     * @param string $newsletter_user_key
      * @param string $newsletter_users_created
      */
     public function __construct(int $newsletter_users_id, string $newsletter_users_mail, string $newsletter_user_key, string $newsletter_users_created)

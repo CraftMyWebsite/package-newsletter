@@ -2,10 +2,11 @@
 
 namespace CMW\Entity\Newsletter;
 
-use CMW\Utils\Date;
 use CMW\Entity\Users\UserEntity;
+use CMW\Manager\Package\AbstractEntity;
+use CMW\Utils\Date;
 
-class NewsletterEntity
+class NewsletterEntity extends AbstractEntity
 {
     private int $newsletter_id;
     private UserEntity $user_id;

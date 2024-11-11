@@ -2,9 +2,10 @@
 
 namespace CMW\Entity\Newsletter;
 
+use CMW\Manager\Package\AbstractEntity;
 use CMW\Utils\Date;
 
-class NewsletterExternalUserEntity
+class NewsletterExternalUserEntity extends AbstractEntity
 {
     private int $id;
     private string $email;
