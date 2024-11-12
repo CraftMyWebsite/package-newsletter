@@ -22,7 +22,7 @@ $description = LangManager::translate('newsletter.description');
             <button form="sendMail" id="sendButton" type="submit" class="btn-primary"><?= LangManager::translate('core.btn.send') ?></button>
         </div>
         <form id="sendMail" method="post">
-            <?php (new SecurityManager())->insertHiddenToken() ?>
+            <?php SecurityManager::getInstance()->insertHiddenToken() ?>
             <label for="newsletter_object">Objet :</label>
             <div class="input-group">
                 <i class="fa-solid fa-envelope-open"></i>
@@ -40,7 +40,7 @@ $description = LangManager::translate('newsletter.description');
                 <button form="settings" type="submit" class="btn-primary"><?= LangManager::translate('core.btn.save') ?></button>
             </div>
             <form id="settings" action="settings" method="post">
-                <?php (new SecurityManager())->insertHiddenToken() ?>
+                <?php SecurityManager::getInstance()->insertHiddenToken() ?>
                 <div class="grid-2">
                     <div>
                         <label for="mail"><?= LangManager::translate('newsletter.admin.mail-sender') ?></label>
@@ -152,7 +152,7 @@ $description = LangManager::translate('newsletter.description');
             <button type="button" data-modal-hide="modal-add"><i class="fa-solid fa-xmark"></i></button>
         </div>
         <form action="manage/external/users/add" method="post">
-            <?php (new SecurityManager())->insertHiddenToken(); ?>
+            <?php SecurityManager::getInstance()->insertHiddenToken(); ?>
             <div class="modal-body">
                 <label for="email"><?= LangManager::translate('users.users.mail') ?> :</label>
                 <div class="input-group">

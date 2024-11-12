@@ -17,7 +17,7 @@ Website::setDescription('Abonnez-vous !');
 <section style="padding: .5rem; max-width: 50%; margin: auto">
     <h5 style="text-align: center">Newsletter</h5>
     <form action="newsletter" method="post">
-        <?php (new SecurityManager())->insertHiddenToken() ?>
+        <?php SecurityManager::getInstance()->insertHiddenToken() ?>
         <input type="email" style="display: block; width: 100%" name="newsletter_users_mail" placeholder="your@mail.com" required>
         <?php SecurityController::getPublicData(); ?>
         <button style="display: block; width: 100%; margin-top: 20px" type="submit">M'abonner</button>
