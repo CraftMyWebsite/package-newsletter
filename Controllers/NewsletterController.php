@@ -2,9 +2,9 @@
 
 namespace CMW\Controller\Newsletter;
 
-use CMW\Controller\Core\MailController;
 use CMW\Controller\Core\SecurityController;
 use CMW\Controller\Users\UsersController;
+use CMW\Controller\Users\UsersSessionsController;
 use CMW\Manager\Env\EnvManager;
 use CMW\Manager\Flash\Alert;
 use CMW\Manager\Flash\Flash;
@@ -19,7 +19,6 @@ use CMW\Model\Newsletter\NewsletterExternalUserModel;
 use CMW\Model\Newsletter\NewsletterModel;
 use CMW\Model\Newsletter\NewsletterSettingsModel;
 use CMW\Model\Newsletter\NewsletterUserModel;
-use CMW\Model\Users\UsersModel;
 use CMW\Utils\Redirect;
 use CMW\Utils\Utils;
 use CMW\Utils\Website;
@@ -80,7 +79,7 @@ class NewsletterController extends AbstractController
         } else {
             $i = 0;
             [$newsletter_object, $newsletter_content] = Utils::filterInput('newsletter_object', 'newsletter_content');
-            $user_id = UsersModel::getCurrentUser()?->getId();
+            $user_id = UsersSessionsController::getInstance()->getCurrentUser()?->getId();
             $url = Website::getProtocol() . '://' . $_SERVER['SERVER_NAME'] . EnvManager::getInstance()->getValue('PATH_SUBFOLDER') . 'newsletter/unsubscribe/';
             foreach (NewsletterUserModel::getInstance()->getNewsletterUsers() as $mail) {
                 MailManager::getInstance()->sendMailWithSender($config->getSenderMail(), $config->getSenderName(), $mail->getMail(), $newsletter_object, $newsletter_content . "<br><br><small><a href='" . $url . $mail->getKey() . "' target='_blank'>" . LangManager::translate('newsletter.unsubscribe') . '</a></small>');
