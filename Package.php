@@ -39,8 +39,7 @@ class Package implements IPackageConfig
                 icon: 'fas fa-bullhorn',
                 title: 'Newsletter',
                 url: 'newsletter/manage',
-                permission: 'newsletter.show',
-                subMenus: []
+                permission: 'newsletter.show'
             ),
         ];
     }
